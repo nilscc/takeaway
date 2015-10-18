@@ -7,10 +7,12 @@ import Crypto.Random
 import Control.Monad.State
 import Control.Monad.Reader
 import Data.Acid
+import Data.Binary.Get
 --import Data.List (foldl')
 
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as BL
 import qualified Data.IntSet as IntSet
 
 import System.IO.Unsafe (unsafePerformIO)
@@ -19,15 +21,9 @@ import Foreign
 -- local includes
 import Takeaway.Data.Acid.ID
 
--- | Convert bytestring (8 byte size!) to Int using FFI to cast underlying
--- pointers (little endian)
+-- | Convert binary ByteString to Int (little endian)
 bsToInt :: ByteString -> Int
-bsToInt bs = fromIntegral $
-  unsafePerformIO $ BS.useAsCStringLen bs $ \(cs, len) -> do
-    if len /= 8 then
-      return 0
-     else
-      peek (castPtr cs :: Ptr Int64)
+bsToInt = fromIntegral . runGet getWord64le . BL.fromStrict
 
 newUniqueId :: CPRG gen => gen -> Update IdManager (ID, gen)
 newUniqueId gen = do

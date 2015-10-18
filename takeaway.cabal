@@ -32,6 +32,7 @@ library
     containers, mtl,
     bytestring,
     acid-state, safecopy >= 0.8.6,
+    binary,
     crypto-random
 
 
@@ -47,4 +48,5 @@ test-suite takeaway-tests
     bytestring,
     acid-state, safecopy >= 0.8.6,
     crypto-random,
+    binary,
     QuickCheck
