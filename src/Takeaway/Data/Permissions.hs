@@ -14,6 +14,7 @@ allRights :: Rights
 allRights = Read :& Add :& Change :& Delete
 
 newtype Bitflag a = Bitflag { bitflag :: Word }
+  deriving (Eq, Show)
 
 rightsToWord :: Rights -> Word
 rightsToWord r = case r of
