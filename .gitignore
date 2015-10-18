@@ -1,0 +1,9 @@
+dist/
+
+.cabal-sandbox/
+cabal.sandbox.config
+
+.hs_tags
+
+*.swp
+*.swo
