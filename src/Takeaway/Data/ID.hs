@@ -1,25 +1,33 @@
 module Takeaway.Data.ID
-  ( ID
+  {- ( ID
   , newUniqueId
-  ) where
+  ) -} where
 
 import Crypto.Random
 import Control.Monad.State
 import Control.Monad.Reader
 import Data.Acid
-import Data.List (foldl')
+--import Data.List (foldl')
 
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
 import qualified Data.IntSet as IntSet
 
-import Foreign.Storable
+import System.IO.Unsafe (unsafePerformIO)
+import Foreign
 
 -- local includes
 import Takeaway.Data.Acid.ID
 
+-- | Convert bytestring (8 byte size!) to Int using FFI to cast underlying
+-- pointers (little endian)
 bsToInt :: ByteString -> Int
-bsToInt = foldl' (\i w8 -> i * 256 + fromIntegral w8) 0 . BS.unpack
+bsToInt bs = fromIntegral $
+  unsafePerformIO $ BS.useAsCStringLen bs $ \(cs, len) -> do
+    if len /= 8 then
+      return 0
+     else
+      peek (castPtr cs :: Ptr Int64)
 
 newUniqueId :: CPRG gen => gen -> Update IdManager (ID, gen)
 newUniqueId gen = do

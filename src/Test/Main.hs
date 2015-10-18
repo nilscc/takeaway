@@ -4,10 +4,12 @@ import System.Exit
 
 -- local tests
 import Test.Permissions
+import Test.ID
 
 main :: IO ()
 main = checkAll $ \run -> do
   run permissionTests
+  run idTests
 
 -- | Supply 'run' method to run `IO Bool` actions, but check all results and
 -- exit if any of them failed (but do not exit early, all actions are
